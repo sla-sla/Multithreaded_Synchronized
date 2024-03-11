@@ -16,18 +16,20 @@ public class Main {
         for (String str : texts) {
             Runnable logic = () -> {
                 int count = 0;
-                synchronized (sizeToFreq) {
-                    for (int i = 0; i < str.length(); i++) { //проходим по каждому символу
-                        if (str.charAt(i) == 'R') {
-                            count++;
-                        } else {                            // если не r, то count заносим в мапу и обнуляем
-                            if (count > 0) {
+                for (int i = 0; i < str.length(); i++) { //проходим по каждому символу
+                    if (str.charAt(i) == 'R') {
+                        count++;
+                    } else {                            // если не r, то count заносим в мапу и обнуляем
+                        if (count > 0) {
+                            synchronized (sizeToFreq) {
                                 sizeToFreq.put(count, sizeToFreq.getOrDefault(count, 0) + 1);
-                                count = 0;
                             }
+                            count = 0;
                         }
                     }
-                    if (count > 0) {        // если r конце строки, то его нужно засчитать
+                }
+                if (count > 0) {        // если r конце строки, то его нужно засчитать
+                    synchronized (sizeToFreq) {
                         sizeToFreq.put(count, sizeToFreq.getOrDefault(count, 0) + 1);
                     }
                 }
